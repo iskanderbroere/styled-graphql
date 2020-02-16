@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import "./styles.css"
 import { Button } from "./styledGraphql"
 import { schema } from "./graphqlStyles"
 import { graphql } from "graphql"
@@ -7,8 +6,7 @@ import { graphql } from "graphql"
 const doc = `
   query Styles {
     typography {
-      textColor
-      hover
+      textColor(color: "gray-800", focus: "indigo-200")
     }
   }
 `
@@ -33,11 +31,8 @@ const objectToString = (obj): string => {
 function useGraphQLStyles(props?) {
   const [classnames, setClassnames] = useState("")
   useEffect(() => {
-    graphql(schema, doc, {
-      typography(obj, args, context, info) {
-        return { textColor: "text-pink", hover: "hover:text-red" }
-      },
-    }).then((r) => {
+    graphql(schema, doc).then((r) => {
+      console.log(r)
       const cn = objectToString(r.data)
       console.log(cn)
       setClassnames(cn)
