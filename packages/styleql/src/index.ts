@@ -1,30 +1,28 @@
+import { graphQLDataToArrayOfClassnames } from './utils';
 import { schema } from "./graphqlStyles"
 import { graphql } from "graphql"
+import { uniq } from 'ramda';
 
 const defaultQuery = `
-  query Styles {
+  query Styles($color: TextColors) {
     typography {
-      textColor(color: GRAY_800, focus: "indigo-200", hover: "purple-900")
+      textColor(color: $color, focus: "indigo-200", hover: "purple-900")
       fontFamily(font: MONO)
     }
   }
 `
 
-const objectToString = (obj): string => {
-  return Object.values(obj)
-    .map((value) => {
-      return typeof value === "object" ? objectToString(value) : value
-    })
-    .flat(Infinity)
-    .join(" ")
+interface GetClassnamesArgs {
+  doc?: string
 }
 
-export async function getClassnames({ doc } = { doc: defaultQuery }) {
-  const classnames = await graphql(schema, doc).then((r) => {
-    console.log(r)
-    const cn = objectToString(r.data)
-    console.log(cn)
-    return cn
-  })
-  return classnames
+export async function getClassnames({ doc }: GetClassnamesArgs = { doc: defaultQuery }): Promise<string[]> {
+  try {
+    const { data = {}, errors } = await graphql(schema, doc, null, null, { color: "GRAY_800" })
+    const classnames = graphQLDataToArrayOfClassnames(data)
+    console.log(errors)
+    return uniq(classnames)
+  } catch (error) {
+    debugger
+  }
 }
