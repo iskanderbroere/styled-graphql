@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "es2018",
     "module": "esnext",
@@ -9,7 +10,6 @@
       "dom"
     ],
     "esModuleInterop": true,
-    "allowJs": true,
     "sourceMap": true,
     "strict": true,
     "noEmit": true,
@@ -26,8 +26,5 @@
       "@types/node",
       "@nuxt/types"
     ]
-  },
-  "exclude": [
-    "node_modules"
-  ]
+  }
 }

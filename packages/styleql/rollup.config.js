@@ -9,17 +9,25 @@ const extensions = ['.mjs', '.js', '.json', '.node', '.ts', '.tsx']
 
 export default {
   input: 'src/index.ts',
-  output: {
-    file: pkg.module,
-    format: 'cjs',
-    sourcemap: true
-  },
+  output: [
+    {
+      file: pkg.main,
+      format: 'cjs',
+      sourcemap: true,
+    }
+  ],
   external: [
     ...builtinModules,
     'graphql',
     'graphql-tools'
   ],
   plugins: [
+    resolve({
+      extensions,
+    }),
+    commonjs({
+      include: /node_modules/
+    }),
     ts({
       transpiler: "babel",
       exclude: [
@@ -27,10 +35,6 @@ export default {
         "../../node_modules/**/*.*",
       ],
     }),
-    resolve({
-      extensions,
-    }),
-    commonjs(),
     sizeSnapshot()
   ]
 };

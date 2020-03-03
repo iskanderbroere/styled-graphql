@@ -1,6 +1,7 @@
 {
+  "extends": "../../tsconfig.json",
   "include": [
-    "packages/cra/src/*"
+    "src/*"
   ],
   "compilerOptions": {
     "strict": false,

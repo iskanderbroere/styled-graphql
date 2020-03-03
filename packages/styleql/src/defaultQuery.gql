@@ -1,0 +1,6 @@
+query Styles($color: TextColors) {
+  typography {
+    textColor(color: $color, focus: "indigo-200", hover: "purple-900")
+    fontFamily(font: MONO)
+  }
+}

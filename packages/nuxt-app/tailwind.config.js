@@ -695,7 +695,7 @@ module.exports = {
   corePlugins: {},
   plugins: [
     plugin(function ({ addUtilities, addComponents, e, prefix, config }) {
-      console.log(config(''))
+      // console.log(config(''))
     }),
   ],
 }

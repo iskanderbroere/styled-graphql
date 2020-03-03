@@ -1,27 +1,26 @@
 import { graphQLDataToArrayOfClassnames } from './utils';
 import { schema } from "./graphqlStyles"
-import { graphql } from "graphql"
-import { uniq } from 'ramda';
-
-const defaultQuery = `
-  query Styles($color: TextColors) {
-    typography {
-      textColor(color: $color, focus: "indigo-200", hover: "purple-900")
-      fontFamily(font: MONO)
-    }
-  }
-`
+import { execute, DocumentNode } from "graphql"
+import { uniq, pipe, join } from 'ramda';
+import defaultQuery from './defaultQuery.gql'
 
 interface GetClassnamesArgs {
-  doc?: string
+  doc?: DocumentNode
 }
 
-export async function getClassnames({ doc }: GetClassnamesArgs = { doc: defaultQuery }): Promise<string[]> {
+export async function getClassnames({ doc }: GetClassnamesArgs = { doc: defaultQuery }): Promise<string> {
   try {
-    const { data = {}, errors } = await graphql(schema, doc, null, null, { color: "GRAY_800" })
+    const { data = {}, errors } = await execute(schema, doc, null, null, { color: "GRAY_800" })
+    if (errors && errors.length > 0) {
+      errors.forEach(error => {
+        throw Error(error.message)
+      })
+    }
     const classnames = graphQLDataToArrayOfClassnames(data)
-    console.log(errors)
-    return uniq(classnames)
+    return pipe(
+      // necessary?
+      uniq,
+      join(' '))(classnames)
   } catch (error) {
     debugger
   }

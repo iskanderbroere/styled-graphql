@@ -1,0 +1,41 @@
+import { Helmet } from "react-helmet"
+
+<Helmet>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" />
+</Helmet>
+
+Hello there!
+
+You can write your "styled components" like this:
+
+```jsx
+import { styleql } from "@styleql/react"
+
+const StyleQLButton = styleql.button`
+  query ButtonStyles($color: TextColors) {
+    typography {
+     textColor(color: $color, focus: "indigo-200", hover: "purple-900")
+     fontFamily(font: MONO)
+    }
+  }
+`
+```
+
+At build time this gets transformed into:
+
+```jsx
+const Button = (
+  { children, className, styleql: { color }, ...props } = {
+    styleql: {
+      color: "GREY_900",
+    },
+  }
+) =>
+  React.createElement(
+    "button",
+    Object.assign({}, props, {
+      className: `text-${color} hover:text-purple-900 focus:text-indigo-200 font-mono ${className}`,
+    }),
+    children
+  )
+```

@@ -5,15 +5,14 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref, onMounted } from "@vue/composition-api";
+import { defineComponent, ref, onMounted } from "@vue/composition-api";
 import { getClassnames } from "styleql";
 
-export default createComponent({
+export default defineComponent({
   setup() {
-    const classes = ref([]);
+    const classes = ref<string>(null);
     onMounted(async () => {
       const a = await getClassnames();
-      console.log(a);
       classes.value = a;
     });
     return { classes };
