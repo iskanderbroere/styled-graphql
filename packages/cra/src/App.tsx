@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+// @ts-ignore
 import { getClassnames } from "styleql"
 
 // const doc = `

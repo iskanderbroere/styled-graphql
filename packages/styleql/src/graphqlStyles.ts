@@ -1,37 +1,54 @@
-import { makeExecutableSchema } from "graphql-tools";
-import typeDefs from "./typeDefs.gql";
+import { schema } from "nexus-future";
+import { makeSchema } from "@nexus/schema";
+import path from 'path';
 
-const resolvers = {
-  TextColors: {
-    GRAY_800: "gray-800"
-  },
-  Query: {
-    typography() {
-      return {};
-    }
-  },
-  Typography: {
-    textColor(_, args): string[] {
-      const colorClassname = `text-${args.color}`;
-      const colorHoverClassname = args.hover && `hover:text-${args.hover}`;
-      const colorFocusClassname = args.focus && `focus:text-${args.focus}`;
-      return [colorClassname, colorHoverClassname, colorFocusClassname].filter(
-        Boolean
-      );
-    },
-    fontFamily(_, args): string[] {
-      switch (args.font) {
-        case "SANS":
-          return ["font-sans"];
-        case "SERIF":
-          return ["font-serif"];
-        case "MONO":
-          return ["font-mono"];
-        default:
-          return [];
-      }
-    }
-  }
-};
+const textColorsEnum = schema.enumType({
+    name: "TextColors",
+    members: ['GRAY_800', 'PURPLE_900', 'INDIGO_200']
+})
 
-export const schema = makeExecutableSchema({ resolvers, typeDefs });
+const fontsEnum = schema.enumType({
+    name: "Fonts",
+    members: ['SANS', 'SERIF', 'MONO']
+})
+
+const queries = schema.queryType({
+    definition(t) {
+        t.list.string('textColor', {
+            args: {
+                color: schema.arg({type: "TextColors", required: true}),
+                hover: schema.arg({ type: "TextColors" }),
+                focus: schema.arg({ type: "TextColors" }),
+            },
+            resolve(_root, {color, hover = false, focus = false}) {
+                const colorClassname = `text-${color}`;
+                const colorHoverClassname = hover && `hover:text-${hover}`;
+                const colorFocusClassname = focus && `focus:text-${focus}`;
+                return [colorClassname, colorHoverClassname, colorFocusClassname].filter(
+                    Boolean
+                );
+            }
+        })
+        t.list.string('fontFamily', {
+            args: {
+                font: schema.arg({type: "Fonts", required: true})
+            },
+            resolve(_root, {font}) {
+                switch (font) {
+                    case "SANS":
+                        return ["font-sans"];
+                    case "SERIF":
+                        return ["font-serif"];
+                    case "MONO":
+                        return ["font-mono"];
+                    default:
+                        return []
+                }
+            }
+        })
+
+    }
+})
+
+
+export const s = makeSchema({ types: [ queries, textColorsEnum, fontsEnum], outputs: true });

@@ -1,5 +1,5 @@
 import { graphQLDataToArrayOfClassnames } from './utils';
-import { schema } from "./graphqlStyles"
+import { s as schema } from "./graphqlStyles"
 import { execute, DocumentNode } from "graphql"
 import { uniq, pipe, join } from 'ramda';
 import defaultQuery from './defaultQuery.gql'
@@ -9,11 +9,11 @@ interface GetClassnamesArgs {
 }
 
 export async function getClassnames({ doc }: GetClassnamesArgs = { doc: defaultQuery }): Promise<string> {
-  try {
+    try {
     const { data = {}, errors } = await execute(schema, doc, null, null, { color: "GRAY_800" })
     if (errors && errors.length > 0) {
       errors.forEach(error => {
-        throw Error(error.message)
+        console.log(Error(error.message))
       })
     }
     const classnames = graphQLDataToArrayOfClassnames(data)
